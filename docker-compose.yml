@@ -25,6 +25,7 @@ services:
     environment:
       PORT: 3000
       DATABASE_URL: postgresql://frs:frs@postgres:5432/frs
+      JWT_SECRET: dev-only-change-me-in-real-deployments
     ports:
       - "3000:3000"
     volumes:
