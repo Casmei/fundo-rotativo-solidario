@@ -2,7 +2,11 @@ import { loadEnv } from './env.js';
 
 describe('loadEnv', () => {
   it('returns parsed values when all required vars are present', () => {
-    const env = loadEnv({ DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs', JWT_SECRET: 'test-secret', PORT: '4000' });
+    const env = loadEnv({
+      DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs',
+      JWT_SECRET: 'test-secret',
+      PORT: '4000',
+    });
 
     expect(env.DATABASE_URL).toBe('postgresql://frs:frs@localhost:5432/frs');
     expect(env.JWT_SECRET).toBe('test-secret');
@@ -10,7 +14,10 @@ describe('loadEnv', () => {
   });
 
   it('defaults PORT to 3000 when not set', () => {
-    const env = loadEnv({ DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs', JWT_SECRET: 'test-secret' });
+    const env = loadEnv({
+      DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs',
+      JWT_SECRET: 'test-secret',
+    });
 
     expect(env.PORT).toBe(3000);
   });
@@ -20,6 +27,8 @@ describe('loadEnv', () => {
   });
 
   it('throws when JWT_SECRET is missing', () => {
-    expect(() => loadEnv({ DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs' })).toThrow(/JWT_SECRET/);
+    expect(() => loadEnv({ DATABASE_URL: 'postgresql://frs:frs@localhost:5432/frs' })).toThrow(
+      /JWT_SECRET/,
+    );
   });
 });
