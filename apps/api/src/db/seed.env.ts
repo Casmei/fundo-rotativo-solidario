@@ -15,8 +15,10 @@ function throwingReporter({ errors }: { errors: Record<string, Error | undefined
 }
 
 export function loadSeedEnv(source: NodeJS.ProcessEnv = process.env) {
+  const sanitized = Object.fromEntries(Object.entries(source).filter(([, value]) => value !== ''));
+
   return cleanEnv(
-    source,
+    sanitized,
     {
       SEED_BRUNO_PHONE: str(),
       SEED_BRUNO_PASSWORD: str({ default: DEV_FALLBACK_BRUNO_PASSWORD }),

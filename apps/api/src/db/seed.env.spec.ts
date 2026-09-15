@@ -29,6 +29,18 @@ describe('loadSeedEnv', () => {
     expect(env.SEED_LUANA_PASSWORD).toBe(DEV_FALLBACK_LUANA_PASSWORD);
   });
 
+  it('falls back to dev passwords when they are set to an empty string', () => {
+    const env = loadSeedEnv({
+      SEED_BRUNO_PHONE: '5533900000001',
+      SEED_BRUNO_PASSWORD: '',
+      SEED_LUANA_PHONE: '5533900000002',
+      SEED_LUANA_PASSWORD: '',
+    });
+
+    expect(env.SEED_BRUNO_PASSWORD).toBe(DEV_FALLBACK_BRUNO_PASSWORD);
+    expect(env.SEED_LUANA_PASSWORD).toBe(DEV_FALLBACK_LUANA_PASSWORD);
+  });
+
   it('throws when SEED_BRUNO_PHONE is missing', () => {
     expect(() => loadSeedEnv({ SEED_LUANA_PHONE: '5533900000002' })).toThrow(/SEED_BRUNO_PHONE/);
   });
