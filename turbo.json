@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["DATABASE_URL", "JWT_SECRET", "PORT", "NODE_ENV"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -24,7 +25,8 @@
       "cache": false
     },
     "db:seed": {
-      "cache": false
+      "cache": false,
+      "env": ["SEED_BRUNO_PHONE", "SEED_BRUNO_PASSWORD", "SEED_LUANA_PHONE", "SEED_LUANA_PASSWORD"]
     }
   }
 }
