@@ -1,4 +1,6 @@
+import { eq } from 'drizzle-orm';
 import type { Database } from './db.module.js';
+import { users } from './schema.js';
 import { upsertSeedUser } from './upsert-seed-user.js';
 
 function createMockDb(existingUser: Record<string, unknown> | undefined) {
@@ -10,7 +12,10 @@ function createMockDb(existingUser: Record<string, unknown> | undefined) {
   const values = vi.fn().mockResolvedValue(undefined);
   const insert = vi.fn().mockReturnValue({ values });
 
-  return { select, insert } as unknown as Database;
+  return { select, insert, where, values } as unknown as Database & {
+    where: typeof where;
+    values: typeof values;
+  };
 }
 
 describe('upsertSeedUser', () => {
@@ -40,5 +45,19 @@ describe('upsertSeedUser', () => {
 
     expect(result).toBe('skipped');
     expect(db.insert).not.toHaveBeenCalled();
+  });
+
+  it('normalizes a formatted phone before looking it up and before inserting', async () => {
+    const db = createMockDb(undefined);
+
+    await upsertSeedUser(db, {
+      name: 'Bruno',
+      phone: '(11) 91234-5678',
+      password: 'bruno-real-password',
+      role: 'back_office',
+    });
+
+    expect(db.where).toHaveBeenCalledWith(eq(users.phone, '11912345678'));
+    expect(db.values).toHaveBeenCalledWith(expect.objectContaining({ phone: '11912345678' }));
   });
 });
