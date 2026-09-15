@@ -1,0 +1,21 @@
+{
+  "name": "frs",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "test": "turbo run test",
+    "test:integration": "turbo run test:integration"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.13",
+    "turbo": "2.10.13"
+  }
+}
