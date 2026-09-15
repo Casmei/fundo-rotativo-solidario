@@ -1,6 +1,6 @@
 import type { ExecutionContext } from '@nestjs/common';
-import type { AuthTokenPayload } from './auth-token-payload.js';
-import { getCurrentUserFromContext } from './current-user.decorator.js';
+import type { AuthTokenPayload } from '../../../src/auth/auth-token-payload.js';
+import { getCurrentUserFromContext } from '../../../src/auth/decorators/current-user.decorator.js';
 
 describe('getCurrentUserFromContext', () => {
   it('returns the user attached to the request by JwtAuthGuard', () => {

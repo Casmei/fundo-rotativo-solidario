@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { AuthModule } from './auth.module.js';
+import { AuthModule } from '../../src/auth/auth.module.js';
 
 describe('AuthModule', () => {
   it('resolves its dependency graph without errors', async () => {

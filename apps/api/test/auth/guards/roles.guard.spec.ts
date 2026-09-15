@@ -1,8 +1,8 @@
 import type { ExecutionContext } from '@nestjs/common';
 import { ForbiddenException } from '@nestjs/common';
 import type { Reflector } from '@nestjs/core';
-import type { AuthTokenPayload } from './auth-token-payload.js';
-import { RolesGuard } from './roles.guard.js';
+import type { AuthTokenPayload } from '../../../src/auth/auth-token-payload.js';
+import { RolesGuard } from '../../../src/auth/guards/roles.guard.js';
 
 function createContext(user: AuthTokenPayload | undefined): ExecutionContext {
   return {

@@ -6,9 +6,9 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import request from 'supertest';
 import type { App } from 'supertest/types';
-import { AppModule } from '../src/app.module.js';
-import { loadEnv } from '../src/config/env.js';
-import * as schema from '../src/db/schema.js';
+import { AppModule } from '../../src/app.module.js';
+import { loadEnv } from '../../src/config/env.js';
+import * as schema from '../../src/db/schema.js';
 
 const TEST_USER = {
   name: 'Teste E2E',

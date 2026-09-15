@@ -2,7 +2,7 @@ import type { ExecutionContext } from '@nestjs/common';
 import { UnauthorizedException } from '@nestjs/common';
 import type { Reflector } from '@nestjs/core';
 import type { JwtService } from '@nestjs/jwt';
-import { extractBearerToken, JwtAuthGuard } from './jwt-auth.guard.js';
+import { extractBearerToken, JwtAuthGuard } from '../../../src/auth/guards/jwt-auth.guard.js';
 
 function createContext(request: {
   headers: Record<string, string | undefined>;

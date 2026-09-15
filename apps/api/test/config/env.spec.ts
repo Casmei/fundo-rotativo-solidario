@@ -1,4 +1,4 @@
-import { loadEnv } from './env.js';
+import { loadEnv } from '../../src/config/env.js';
 
 describe('loadEnv', () => {
   it('returns parsed values when all required vars are present', () => {

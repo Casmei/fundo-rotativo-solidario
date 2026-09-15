@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { LoginDto } from './login.dto.js';
+import { LoginDto } from '../../../src/auth/dto/login.dto.js';
 
 describe('LoginDto', () => {
   it('passes validation with phone and password', async () => {

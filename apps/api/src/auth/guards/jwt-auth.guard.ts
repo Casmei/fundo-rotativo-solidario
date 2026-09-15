@@ -7,8 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
-import type { AuthTokenPayload } from './auth-token-payload.js';
-import { IS_PUBLIC_KEY } from './public.decorator.js';
+import type { AuthTokenPayload } from '../auth-token-payload.js';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
 
 export function extractBearerToken(header?: string): string | undefined {
   if (!header) {

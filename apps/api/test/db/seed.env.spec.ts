@@ -3,7 +3,7 @@ import {
   DEV_FALLBACK_BRUNO_PASSWORD,
   DEV_FALLBACK_LUANA_PASSWORD,
   loadSeedEnv,
-} from './seed.env.js';
+} from '../../src/db/seed.env.js';
 
 describe('loadSeedEnv', () => {
   it('returns the provided values when all vars are set', () => {

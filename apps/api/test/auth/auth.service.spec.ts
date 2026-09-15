@@ -1,8 +1,8 @@
 import { UnauthorizedException } from '@nestjs/common';
 import type { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
-import type { Database } from '../db/db.module.js';
-import { AuthService } from './auth.service.js';
+import { AuthService } from '../../src/auth/auth.service.js';
+import type { Database } from '../../src/db/db.module.js';
 
 function createMockDb(
   user:

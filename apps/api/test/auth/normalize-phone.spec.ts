@@ -1,4 +1,4 @@
-import { normalizePhone } from './normalize-phone.js';
+import { normalizePhone } from '../../src/auth/normalize-phone.js';
 
 describe('normalizePhone', () => {
   it('strips formatting characters, keeping only digits', () => {

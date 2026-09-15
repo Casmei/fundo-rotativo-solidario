@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import type { Database } from './db.module.js';
-import { users } from './schema.js';
-import { upsertSeedUser } from './upsert-seed-user.js';
+import type { Database } from '../../src/db/db.module.js';
+import { users } from '../../src/db/schema.js';
+import { upsertSeedUser } from '../../src/db/upsert-seed-user.js';
 
 function createMockDb(existingUser: Record<string, unknown> | undefined) {
   const limit = vi.fn().mockResolvedValue(existingUser ? [existingUser] : []);

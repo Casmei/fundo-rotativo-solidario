@@ -4,12 +4,12 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import type { App } from 'supertest/types';
-import type { AuthTokenPayload } from '../src/auth/auth-token-payload.js';
-import { CurrentUser } from '../src/auth/current-user.decorator.js';
-import { JwtAuthGuard } from '../src/auth/jwt-auth.guard.js';
-import { Public } from '../src/auth/public.decorator.js';
-import { Roles } from '../src/auth/roles.decorator.js';
-import { RolesGuard } from '../src/auth/roles.guard.js';
+import type { AuthTokenPayload } from '../../src/auth/auth-token-payload.js';
+import { CurrentUser } from '../../src/auth/decorators/current-user.decorator.js';
+import { Public } from '../../src/auth/decorators/public.decorator.js';
+import { Roles } from '../../src/auth/decorators/roles.decorator.js';
+import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../../src/auth/guards/roles.guard.js';
 
 const TEST_JWT_SECRET = 'test-secret';
 
