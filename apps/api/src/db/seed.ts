@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import { loadEnv } from '../config/env.js';
 import * as schema from './schema.js';
 import {
+  assertNoDevFallbackInProduction,
   DEV_FALLBACK_BRUNO_PASSWORD,
   DEV_FALLBACK_LUANA_PASSWORD,
   loadSeedEnv,
@@ -13,6 +14,8 @@ import { upsertSeedUser } from './upsert-seed-user.js';
 async function main() {
   const env = loadEnv();
   const seedEnv = loadSeedEnv();
+
+  assertNoDevFallbackInProduction(process.env.NODE_ENV, seedEnv);
 
   if (seedEnv.SEED_BRUNO_PASSWORD === DEV_FALLBACK_BRUNO_PASSWORD) {
     console.warn('[seed] SEED_BRUNO_PASSWORD not set, using dev fallback password');
