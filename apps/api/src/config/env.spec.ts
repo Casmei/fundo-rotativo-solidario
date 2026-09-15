@@ -31,4 +31,8 @@ describe('loadEnv', () => {
       /JWT_SECRET/,
     );
   });
+
+  it('throws when DATABASE_URL is an empty string', () => {
+    expect(() => loadEnv({ DATABASE_URL: '', JWT_SECRET: 'secret' })).toThrow(/DATABASE_URL/);
+  });
 });
