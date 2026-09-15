@@ -45,6 +45,12 @@ describe('loadSeedEnv', () => {
     expect(() => loadSeedEnv({ SEED_LUANA_PHONE: '5533900000002' })).toThrow(/SEED_BRUNO_PHONE/);
   });
 
+  it('throws when SEED_BRUNO_PHONE is an empty string', () => {
+    expect(() => loadSeedEnv({ SEED_BRUNO_PHONE: '', SEED_LUANA_PHONE: '5533900000002' })).toThrow(
+      /SEED_BRUNO_PHONE/,
+    );
+  });
+
   it('throws when SEED_LUANA_PHONE is missing', () => {
     expect(() => loadSeedEnv({ SEED_BRUNO_PHONE: '5533900000001' })).toThrow(/SEED_LUANA_PHONE/);
   });
