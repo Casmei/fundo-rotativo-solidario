@@ -16,7 +16,7 @@ Hoje, o acompanhamento de campo e o controle de inadimplência são feitos por c
 
 ## 3. Atores (Linguagem Ubíqua)
  
-### Técnico de Campo
+### Técnico de Campo (`field_agent`)
  
 Pessoa que realiza visitas presenciais aos tomadores apoiados pelo fundo. O termo reaproveita o vocabulário que os próprios documentos do FRSBJ já usam ("visita técnica", "acompanhamento técnico") e corresponde ao título real de quem exerce essa função na Cáritas hoje — não exige tradução entre a linguagem do negócio e a do sistema.
  
@@ -26,7 +26,7 @@ Pessoa que realiza visitas presenciais aos tomadores apoiados pelo fundo. O term
 - Consultar painel de inadimplência
 - Consultar cadastro de tomador/empréstimo
 
-### Administrativo
+### Administrativo (`back_office`)
  
 Pessoa responsável pela gestão administrativa do fundo no dia a dia do sistema: cadastro, conferência de pagamentos e relatórios.
  
@@ -170,6 +170,8 @@ erDiagram
         string perfil "tecnico_de_campo ou administrativo"
     }
 ```
+
+> `perfil` é armazenado no banco como `role`, com os valores `field_agent` (Técnico de Campo) e `back_office` (Administrativo).
  
 Pontos que não aparecem como campos, de propósito:
 - **Atraso de parcela** não é um campo — é `status = pendente E vencimento < hoje`.
