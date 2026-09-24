@@ -5,7 +5,7 @@ import { inArray } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import request from 'supertest';
-import type { App } from 'supertest/types';
+import type { App } from 'supertest/types.js';
 import { AppModule } from '../../src/app.module.js';
 import type { AuthTokenPayload } from '../../src/auth/auth-token-payload.js';
 import { loadEnv } from '../../src/config/env.js';

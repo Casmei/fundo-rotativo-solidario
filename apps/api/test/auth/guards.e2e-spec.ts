@@ -3,7 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import type { App } from 'supertest/types';
+import type { App } from 'supertest/types.js';
 import type { AuthTokenPayload } from '../../src/auth/auth-token-payload.js';
 import { CurrentUser } from '../../src/auth/decorators/current-user.decorator.js';
 import { Public } from '../../src/auth/decorators/public.decorator.js';
