@@ -3,13 +3,14 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, type TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import type { App } from 'supertest/types';
+import type { App } from 'supertest/types.js';
 import type { AuthTokenPayload } from '../../src/auth/auth-token-payload.js';
 import { CurrentUser } from '../../src/auth/decorators/current-user.decorator.js';
 import { Public } from '../../src/auth/decorators/public.decorator.js';
 import { Roles } from '../../src/auth/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../../src/auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../../src/auth/guards/roles.guard.js';
+import { Role } from '../../src/shared/role.enum.js';
 
 const TEST_JWT_SECRET = 'test-secret';
 
@@ -26,7 +27,7 @@ class GuardTestController {
     return { phone: user.phone };
   }
 
-  @Roles('back_office')
+  @Roles(Role.BackOffice)
   @Get('back-office-only')
   getBackOfficeOnly() {
     return { ok: true };
@@ -50,13 +51,13 @@ describe('Guards (e2e)', () => {
   const fieldAgentPayload: AuthTokenPayload = {
     sub: 'user-1',
     phone: '5533900000001',
-    role: 'field_agent',
+    role: Role.FieldAgent,
     name: 'Luana',
   };
   const backOfficePayload: AuthTokenPayload = {
     sub: 'user-2',
     phone: '5533900000002',
-    role: 'back_office',
+    role: Role.BackOffice,
     name: 'Bruno',
   };
 

@@ -5,16 +5,17 @@ import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import request from 'supertest';
-import type { App } from 'supertest/types';
+import type { App } from 'supertest/types.js';
 import { AppModule } from '../../src/app.module.js';
 import { loadEnv } from '../../src/config/env.js';
 import * as schema from '../../src/db/schema.js';
+import { Role } from '../../src/shared/role.enum.js';
 
 const TEST_USER = {
   name: 'Teste E2E',
   phone: '5533900009999',
   password: 'correct-password',
-  role: 'field_agent' as const,
+  role: Role.FieldAgent,
 };
 
 describe('AuthController (e2e)', () => {

@@ -3,6 +3,7 @@ import type { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { AuthService } from '../../src/auth/auth.service.js';
 import type { Database } from '../../src/db/db.module.js';
+import { Role } from '../../src/shared/role.enum.js';
 
 function createMockDb(
   user:
@@ -10,7 +11,7 @@ function createMockDb(
         id: string;
         phone: string;
         passwordHash: string;
-        role: 'field_agent' | 'back_office';
+        role: Role;
         name: string;
       }
     | undefined,
@@ -30,7 +31,7 @@ describe('AuthService', () => {
       id: '1',
       phone: '123',
       passwordHash,
-      role: 'back_office',
+      role: Role.BackOffice,
       name: 'Bruno',
     });
     const jwtService = {
@@ -44,7 +45,7 @@ describe('AuthService', () => {
     expect(jwtService.signAsync).toHaveBeenCalledWith({
       sub: '1',
       phone: '123',
-      role: 'back_office',
+      role: Role.BackOffice,
       name: 'Bruno',
     });
   });
@@ -63,7 +64,7 @@ describe('AuthService', () => {
       id: '1',
       phone: '123',
       passwordHash,
-      role: 'field_agent',
+      role: Role.FieldAgent,
       name: 'Luana',
     });
     const jwtService = { signAsync: vi.fn() } as unknown as JwtService;

@@ -3,6 +3,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import type { Reflector } from '@nestjs/core';
 import type { JwtService } from '@nestjs/jwt';
 import { extractBearerToken, JwtAuthGuard } from '../../../src/auth/guards/jwt-auth.guard.js';
+import { Role } from '../../../src/shared/role.enum.js';
 
 function createContext(request: {
   headers: Record<string, string | undefined>;
@@ -22,7 +23,7 @@ function createGuard(overrides?: { isPublic?: boolean; verifyAsync?: () => Promi
   const jwtService = {
     verifyAsync:
       overrides?.verifyAsync ??
-      vi.fn().mockResolvedValue({ sub: '1', phone: '123', role: 'field_agent', name: 'Luana' }),
+      vi.fn().mockResolvedValue({ sub: '1', phone: '123', role: Role.FieldAgent, name: 'Luana' }),
   } as unknown as JwtService;
 
   return new JwtAuthGuard(jwtService, reflector);
@@ -70,6 +71,6 @@ describe('JwtAuthGuard', () => {
     const context = createContext(request);
 
     await expect(guard.canActivate(context)).resolves.toBe(true);
-    expect(request.user).toEqual({ sub: '1', phone: '123', role: 'field_agent', name: 'Luana' });
+    expect(request.user).toEqual({ sub: '1', phone: '123', role: Role.FieldAgent, name: 'Luana' });
   });
 });
