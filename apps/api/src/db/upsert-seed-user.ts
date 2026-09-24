@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { normalizePhone } from '../auth/normalize-phone.js';
+import type { Role } from '../shared/role.enum.js';
 import type { Database } from './db.module.js';
-import { type Role, users } from './schema.js';
+import { users } from './schema.js';
 
 export interface SeedUserInput {
   name: string;

@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import type { Database } from '../../src/db/db.module.js';
 import { users } from '../../src/db/schema.js';
 import { upsertSeedUser } from '../../src/db/upsert-seed-user.js';
+import { Role } from '../../src/shared/role.enum.js';
 
 function createMockDb(existingUser: Record<string, unknown> | undefined) {
   const limit = vi.fn().mockResolvedValue(existingUser ? [existingUser] : []);
@@ -26,7 +27,7 @@ describe('upsertSeedUser', () => {
       name: 'Bruno',
       phone: '5533900000001',
       password: 'bruno-real-password',
-      role: 'back_office',
+      role: Role.BackOffice,
     });
 
     expect(result).toBe('created');
@@ -40,7 +41,7 @@ describe('upsertSeedUser', () => {
       name: 'Bruno',
       phone: '5533900000001',
       password: 'bruno-real-password',
-      role: 'back_office',
+      role: Role.BackOffice,
     });
 
     expect(result).toBe('skipped');
@@ -54,7 +55,7 @@ describe('upsertSeedUser', () => {
       name: 'Bruno',
       phone: '(11) 91234-5678',
       password: 'bruno-real-password',
-      role: 'back_office',
+      role: Role.BackOffice,
     });
 
     expect(db.where).toHaveBeenCalledWith(eq(users.phone, '11912345678'));

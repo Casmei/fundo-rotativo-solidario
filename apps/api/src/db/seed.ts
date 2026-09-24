@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { loadEnv } from '../config/env.js';
+import { Role } from '../shared/role.enum.js';
 import * as schema from './schema.js';
 import {
   assertNoDevFallbackInProduction,
@@ -31,7 +32,7 @@ async function main() {
     name: 'Bruno',
     phone: seedEnv.SEED_BRUNO_PHONE,
     password: seedEnv.SEED_BRUNO_PASSWORD,
-    role: 'back_office',
+    role: Role.BackOffice,
   });
   console.log(`[seed] Bruno (back_office): ${bruno}`);
 
@@ -39,7 +40,7 @@ async function main() {
     name: 'Luana',
     phone: seedEnv.SEED_LUANA_PHONE,
     password: seedEnv.SEED_LUANA_PASSWORD,
-    role: 'field_agent',
+    role: Role.FieldAgent,
   });
   console.log(`[seed] Luana (field_agent): ${luana}`);
 

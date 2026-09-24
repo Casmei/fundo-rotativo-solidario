@@ -3,6 +3,7 @@ import { ForbiddenException } from '@nestjs/common';
 import type { Reflector } from '@nestjs/core';
 import type { AuthTokenPayload } from '../../../src/auth/auth-token-payload.js';
 import { RolesGuard } from '../../../src/auth/guards/roles.guard.js';
+import { Role } from '../../../src/shared/role.enum.js';
 
 function createContext(user: AuthTokenPayload | undefined): ExecutionContext {
   return {
@@ -23,13 +24,13 @@ describe('RolesGuard', () => {
   const backOfficeUser: AuthTokenPayload = {
     sub: '1',
     phone: '1',
-    role: 'back_office',
+    role: Role.BackOffice,
     name: 'Bruno',
   };
   const fieldAgentUser: AuthTokenPayload = {
     sub: '2',
     phone: '2',
-    role: 'field_agent',
+    role: Role.FieldAgent,
     name: 'Luana',
   };
 
@@ -40,19 +41,19 @@ describe('RolesGuard', () => {
   });
 
   it('allows access when the user has one of the required roles', () => {
-    const guard = createGuard(['back_office']);
+    const guard = createGuard([Role.BackOffice]);
 
     expect(guard.canActivate(createContext(backOfficeUser))).toBe(true);
   });
 
   it('throws when the user role is not among the required roles', () => {
-    const guard = createGuard(['back_office']);
+    const guard = createGuard([Role.BackOffice]);
 
     expect(() => guard.canActivate(createContext(fieldAgentUser))).toThrow(ForbiddenException);
   });
 
   it('throws when there is no authenticated user', () => {
-    const guard = createGuard(['back_office']);
+    const guard = createGuard([Role.BackOffice]);
 
     expect(() => guard.canActivate(createContext(undefined))).toThrow(ForbiddenException);
   });

@@ -1,4 +1,4 @@
-import type { Role } from '../db/schema.js';
+import type { Role } from '../shared/role.enum.js';
 
 export interface AuthTokenPayload {
   sub: string;
