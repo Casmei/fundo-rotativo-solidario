@@ -180,4 +180,14 @@ describe('BorrowersController (e2e)', () => {
     await asBackOffice(request(app.getHttpServer()).get(`/borrowers/${id}`)).expect(404);
     await asBackOffice(request(app.getHttpServer()).delete(`/borrowers/${id}`)).expect(404);
   });
+
+  it('rejects null fields on update with 400', async () => {
+    const { id } = await createBorrower();
+    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+      .send({ name: null })
+      .expect(400);
+    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+      .send({ cpf: null })
+      .expect(400);
+  });
 });

@@ -27,4 +27,12 @@ describe('UpdateBorrowerDto', () => {
   it('rejects an invalid CPF', async () => {
     expect(await errorProperties({ cpf: '11144477736' })).toEqual(['cpf']);
   });
+
+  it('rejects a null name', async () => {
+    expect(await errorProperties({ name: null })).toEqual(['name']);
+  });
+
+  it('rejects a null CPF', async () => {
+    expect(await errorProperties({ cpf: null })).toEqual(['cpf']);
+  });
 });
