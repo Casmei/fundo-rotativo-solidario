@@ -49,9 +49,7 @@
         "borrowers_cpf_unique": {
           "name": "borrowers_cpf_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "cpf"
-          ]
+          "columns": ["cpf"]
         }
       },
       "policies": {},
@@ -108,9 +106,7 @@
         "users_phone_unique": {
           "name": "users_phone_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "phone"
-          ]
+          "columns": ["phone"]
         }
       },
       "policies": {},
@@ -122,10 +118,7 @@
     "public.role": {
       "name": "role",
       "schema": "public",
-      "values": [
-        "field_agent",
-        "back_office"
-      ]
+      "values": ["field_agent", "back_office"]
     }
   },
   "schemas": {},
