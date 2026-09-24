@@ -1,4 +1,4 @@
-import { type INestApplication, ValidationPipe } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { inArray } from 'drizzle-orm';
@@ -9,6 +9,7 @@ import type { App } from 'supertest/types.js';
 import { AppModule } from '../../src/app.module.js';
 import type { AuthTokenPayload } from '../../src/auth/auth-token-payload.js';
 import { loadEnv } from '../../src/config/env.js';
+import { configureApp } from '../../src/configure-app.js';
 import type { Database } from '../../src/db/db.module.js';
 import * as schema from '../../src/db/schema.js';
 import { Role } from '../../src/shared/role.enum.js';
@@ -54,7 +55,7 @@ describe('BorrowersController (e2e)', () => {
       imports: [AppModule],
     }).compile();
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    configureApp(app);
     await app.init();
   });
 
@@ -68,7 +69,7 @@ describe('BorrowersController (e2e)', () => {
   async function createBorrower(
     body: Record<string, unknown> = { name: 'Maria', cpf: '529.982.247-25' },
   ) {
-    const response = await asBackOffice(request(app.getHttpServer()).post('/borrowers'))
+    const response = await asBackOffice(request(app.getHttpServer()).post('/api/borrowers'))
       .send(body)
       .expect(201);
     return response.body as { id: string; name: string; cpf: string; createdAt: string };
@@ -92,32 +93,32 @@ describe('BorrowersController (e2e)', () => {
   });
 
   it('rejects an invalid CPF with 400', async () => {
-    await asBackOffice(request(app.getHttpServer()).post('/borrowers'))
+    await asBackOffice(request(app.getHttpServer()).post('/api/borrowers'))
       .send({ name: 'Maria', cpf: '52998224724' })
       .expect(400);
   });
 
   it('rejects a duplicate CPF with 409', async () => {
     await createBorrower();
-    await asBackOffice(request(app.getHttpServer()).post('/borrowers'))
+    await asBackOffice(request(app.getHttpServer()).post('/api/borrowers'))
       .send({ name: 'Outra', cpf: CPF_A })
       .expect(409);
   });
 
   it('forbids field agents from creating', async () => {
-    await asFieldAgent(request(app.getHttpServer()).post('/borrowers'))
+    await asFieldAgent(request(app.getHttpServer()).post('/api/borrowers'))
       .send({ name: 'Maria', cpf: CPF_A })
       .expect(403);
   });
 
   it('requires authentication', async () => {
-    await request(app.getHttpServer()).get('/borrowers').expect(401);
+    await request(app.getHttpServer()).get('/api/borrowers').expect(401);
   });
 
   it('lists borrowers without CPF, for both roles', async () => {
     await createBorrower();
     for (const as of [asBackOffice, asFieldAgent]) {
-      const response = await as(request(app.getHttpServer()).get('/borrowers')).expect(200);
+      const response = await as(request(app.getHttpServer()).get('/api/borrowers')).expect(200);
       const item = response.body.find((b: { name: string }) => b.name === 'Maria');
       expect(Object.keys(item).sort()).toEqual(['id', 'name']);
     }
@@ -127,25 +128,27 @@ describe('BorrowersController (e2e)', () => {
     const { id } = await createBorrower();
 
     const backOffice = await asBackOffice(
-      request(app.getHttpServer()).get(`/borrowers/${id}`),
+      request(app.getHttpServer()).get(`/api/borrowers/${id}`),
     ).expect(200);
     expect(backOffice.body.cpf).toBe(CPF_A);
 
     const fieldAgent = await asFieldAgent(
-      request(app.getHttpServer()).get(`/borrowers/${id}`),
+      request(app.getHttpServer()).get(`/api/borrowers/${id}`),
     ).expect(200);
     expect(fieldAgent.body).not.toHaveProperty('cpf');
     expect(fieldAgent.body.name).toBe('Maria');
   });
 
   it('returns 404 for a missing borrower and 400 for a non-UUID id', async () => {
-    await asBackOffice(request(app.getHttpServer()).get(`/borrowers/${MISSING_ID}`)).expect(404);
-    await asBackOffice(request(app.getHttpServer()).get('/borrowers/not-a-uuid')).expect(400);
+    await asBackOffice(request(app.getHttpServer()).get(`/api/borrowers/${MISSING_ID}`)).expect(
+      404,
+    );
+    await asBackOffice(request(app.getHttpServer()).get('/api/borrowers/not-a-uuid')).expect(400);
   });
 
   it('updates name and CPF', async () => {
     const { id } = await createBorrower();
-    const response = await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+    const response = await asBackOffice(request(app.getHttpServer()).patch(`/api/borrowers/${id}`))
       .send({ name: 'Maria Silva', cpf: '111.444.777-35' })
       .expect(200);
     expect(response.body).toMatchObject({ id, name: 'Maria Silva', cpf: CPF_B });
@@ -153,7 +156,7 @@ describe('BorrowersController (e2e)', () => {
 
   it('allows re-sending the same CPF on update', async () => {
     const { id } = await createBorrower();
-    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+    await asBackOffice(request(app.getHttpServer()).patch(`/api/borrowers/${id}`))
       .send({ cpf: '529.982.247-25' })
       .expect(200);
   });
@@ -161,32 +164,32 @@ describe('BorrowersController (e2e)', () => {
   it('rejects updating to another borrower CPF with 409', async () => {
     await createBorrower();
     const other = await createBorrower({ name: 'Ana', cpf: CPF_B });
-    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${other.id}`))
+    await asBackOffice(request(app.getHttpServer()).patch(`/api/borrowers/${other.id}`))
       .send({ cpf: CPF_A })
       .expect(409);
   });
 
   it('forbids field agents from updating and deleting', async () => {
     const { id } = await createBorrower();
-    await asFieldAgent(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+    await asFieldAgent(request(app.getHttpServer()).patch(`/api/borrowers/${id}`))
       .send({ name: 'X' })
       .expect(403);
-    await asFieldAgent(request(app.getHttpServer()).delete(`/borrowers/${id}`)).expect(403);
+    await asFieldAgent(request(app.getHttpServer()).delete(`/api/borrowers/${id}`)).expect(403);
   });
 
   it('deletes a borrower, then returns 404', async () => {
     const { id } = await createBorrower();
-    await asBackOffice(request(app.getHttpServer()).delete(`/borrowers/${id}`)).expect(204);
-    await asBackOffice(request(app.getHttpServer()).get(`/borrowers/${id}`)).expect(404);
-    await asBackOffice(request(app.getHttpServer()).delete(`/borrowers/${id}`)).expect(404);
+    await asBackOffice(request(app.getHttpServer()).delete(`/api/borrowers/${id}`)).expect(204);
+    await asBackOffice(request(app.getHttpServer()).get(`/api/borrowers/${id}`)).expect(404);
+    await asBackOffice(request(app.getHttpServer()).delete(`/api/borrowers/${id}`)).expect(404);
   });
 
   it('rejects null fields on update with 400', async () => {
     const { id } = await createBorrower();
-    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+    await asBackOffice(request(app.getHttpServer()).patch(`/api/borrowers/${id}`))
       .send({ name: null })
       .expect(400);
-    await asBackOffice(request(app.getHttpServer()).patch(`/borrowers/${id}`))
+    await asBackOffice(request(app.getHttpServer()).patch(`/api/borrowers/${id}`))
       .send({ cpf: null })
       .expect(400);
   });
