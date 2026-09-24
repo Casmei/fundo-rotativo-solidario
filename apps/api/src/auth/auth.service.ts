@@ -5,8 +5,8 @@ import { eq } from 'drizzle-orm';
 import type { Database } from '../db/db.module.js';
 import { DRIZZLE } from '../db/db.module.js';
 import { users } from '../db/schema.js';
+import { normalizePhone } from '../shared/phone.js';
 import type { AuthTokenPayload } from './auth-token-payload.js';
-import { normalizePhone } from './normalize-phone.js';
 
 @Injectable()
 export class AuthService {

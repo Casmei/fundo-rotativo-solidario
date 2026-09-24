@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
-import { normalizePhone } from '../auth/normalize-phone.js';
+import { normalizePhone } from '../shared/phone.js';
 import type { Role } from '../shared/role.enum.js';
 import type { Database } from './db.module.js';
 import { users } from './schema.js';
