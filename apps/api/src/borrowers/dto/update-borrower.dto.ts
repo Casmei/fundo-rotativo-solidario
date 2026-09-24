@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, ValidateIf } from 'class-validator';
 import { IsCpf } from '../../shared/decorators/is-cpf.decorator.js';
 import { trim } from '../../shared/transforms/trim.js';
 
@@ -11,6 +11,7 @@ export class UpdateBorrowerDto {
   @Transform(trim)
   @IsString()
   @IsNotEmpty()
+  @MaxLength(255)
   name?: string;
 
   @ValidateIf(isProvided)

@@ -36,4 +36,12 @@ describe('CreateBorrowerDto', () => {
   it('rejects a numeric CPF', async () => {
     expect(await errorProperties({ name: 'Maria', cpf: 52998224725 })).toEqual(['cpf']);
   });
+
+  it('accepts a name with 255 characters', async () => {
+    expect(await errorProperties({ name: 'a'.repeat(255), cpf: '52998224725' })).toEqual([]);
+  });
+
+  it('rejects a name longer than 255 characters', async () => {
+    expect(await errorProperties({ name: 'a'.repeat(256), cpf: '52998224725' })).toEqual(['name']);
+  });
 });

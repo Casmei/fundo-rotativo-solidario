@@ -35,4 +35,12 @@ describe('UpdateBorrowerDto', () => {
   it('rejects a null CPF', async () => {
     expect(await errorProperties({ cpf: null })).toEqual(['cpf']);
   });
+
+  it('accepts a name with 255 characters', async () => {
+    expect(await errorProperties({ name: 'a'.repeat(255) })).toEqual([]);
+  });
+
+  it('rejects a name longer than 255 characters', async () => {
+    expect(await errorProperties({ name: 'a'.repeat(256) })).toEqual(['name']);
+  });
 });
