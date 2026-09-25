@@ -46,7 +46,7 @@ export class LoansController {
   @ApiErrorResponse(400, 'Corpo da requisição inválido.', [
     'borrowerId must be a UUID',
     'principalCents must be an integer number',
-    'disbursedAt must be a valid calendar date in the format YYYY-MM-DD',
+    'disbursedAt must be a valid date in YYYY-MM-DD format',
   ])
   @ApiBackOfficeOnly()
   @ApiErrorResponse(
