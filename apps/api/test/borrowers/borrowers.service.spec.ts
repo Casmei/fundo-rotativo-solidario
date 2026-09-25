@@ -44,6 +44,13 @@ function createDeleteDb(rows: { id: string }[]) {
   return { db: { delete: del } as unknown as Database };
 }
 
+function createFailingDeleteDb(error: unknown) {
+  const returning = vi.fn().mockRejectedValue(error);
+  const where = vi.fn().mockReturnValue({ returning });
+  const del = vi.fn().mockReturnValue({ where });
+  return { db: { delete: del } as unknown as Database };
+}
+
 describe('BorrowersService', () => {
   describe('create', () => {
     it('stores the normalized CPF and returns the borrower', async () => {
@@ -148,6 +155,20 @@ describe('BorrowersService', () => {
     it('throws NotFoundException when missing', async () => {
       const service = new BorrowersService(createDeleteDb([]).db);
       await expect(service.remove(borrower.id)).rejects.toBeInstanceOf(NotFoundException);
+    });
+
+    it('throws ConflictException when the borrower has loans', async () => {
+      const foreignKeyViolation = new Error('Failed query', { cause: { code: '23503' } });
+      const service = new BorrowersService(createFailingDeleteDb(foreignKeyViolation).db);
+      await expect(service.remove(borrower.id)).rejects.toThrow(
+        new ConflictException('Borrower has loans'),
+      );
+    });
+
+    it('rethrows unrelated errors', async () => {
+      const boom = new Error('boom');
+      const service = new BorrowersService(createFailingDeleteDb(boom).db);
+      await expect(service.remove(borrower.id)).rejects.toBe(boom);
     });
   });
 });

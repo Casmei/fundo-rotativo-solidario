@@ -2,6 +2,7 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { asc, eq } from 'drizzle-orm';
 import type { Database } from '../db/db.module.js';
 import { DRIZZLE } from '../db/db.module.js';
+import { isForeignKeyViolation } from '../db/is-foreign-key-violation.js';
 import { isUniqueViolation } from '../db/is-unique-violation.js';
 import { type Borrower, borrowers, type NewBorrower } from '../db/schema.js';
 import { normalizeCpf } from '../shared/cpf.js';
@@ -72,10 +73,18 @@ export class BorrowersService {
   }
 
   async remove(id: string): Promise<void> {
-    const [deleted] = await this.db
-      .delete(borrowers)
-      .where(eq(borrowers.id, id))
-      .returning({ id: borrowers.id });
+    let deleted: { id: string } | undefined;
+    try {
+      [deleted] = await this.db
+        .delete(borrowers)
+        .where(eq(borrowers.id, id))
+        .returning({ id: borrowers.id });
+    } catch (error) {
+      if (isForeignKeyViolation(error)) {
+        throw new ConflictException('Borrower has loans');
+      }
+      throw error;
+    }
     if (!deleted) {
       throw new NotFoundException('Borrower not found');
     }
