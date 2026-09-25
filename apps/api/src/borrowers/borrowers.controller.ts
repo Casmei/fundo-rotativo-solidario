@@ -139,6 +139,11 @@ export class BorrowersController {
   @ApiInvalidBorrowerId()
   @ApiBackOfficeOnly()
   @ApiBorrowerNotFound()
+  @ApiErrorResponse(
+    409,
+    'O tomador possui empréstimos e não pode ser removido.',
+    'Borrower has loans',
+  )
   @Roles(Role.BackOffice)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')

@@ -50,7 +50,7 @@ describe('Loans (e2e)', () => {
   });
 
   async function createLoan(body: Record<string, unknown> = validBody()) {
-    const response = await as(Role.BackOffice, http().post('/loans')).send(body).expect(201);
+    const response = await as(Role.BackOffice, http().post('/api/loans')).send(body).expect(201);
     return response.body;
   }
 
@@ -128,24 +128,24 @@ describe('Loans (e2e)', () => {
       ['disbursedAt with time', { disbursedAt: '2026-01-31T03:00:00Z' }],
       ['disbursedAt with an implausible year', { disbursedAt: '0226-03-10' }],
     ])('rejects %s with 400', async (_, overrides) => {
-      await as(Role.BackOffice, http().post('/loans'))
+      await as(Role.BackOffice, http().post('/api/loans'))
         .send({ ...validBody(), ...overrides })
         .expect(400);
     });
 
     it('requires authentication', async () => {
-      await http().post('/loans').send(validBody()).expect(401);
+      await http().post('/api/loans').send(validBody()).expect(401);
     });
 
     it('forbids field agents', async () => {
-      await as(Role.FieldAgent, http().post('/loans')).send(validBody()).expect(403);
+      await as(Role.FieldAgent, http().post('/api/loans')).send(validBody()).expect(403);
     });
 
     it.each([
       ['borrower', { borrowerId: MISSING_ID }, 'Borrower not found'],
       ['fund', { fundId: MISSING_ID }, 'Fund not found'],
     ])('returns 404 for a missing %s', async (_, overrides, message) => {
-      const response = await as(Role.BackOffice, http().post('/loans'))
+      const response = await as(Role.BackOffice, http().post('/api/loans'))
         .send({ ...validBody(), ...overrides })
         .expect(404);
       expect(response.body.message).toBe(message);
@@ -159,7 +159,7 @@ describe('Loans (e2e)', () => {
         'principalCents is too small for 2 installments',
       ],
     ])('returns 422 for %o', async (overrides, message) => {
-      const response = await as(Role.BackOffice, http().post('/loans'))
+      const response = await as(Role.BackOffice, http().post('/api/loans'))
         .send({ ...validBody(), ...overrides })
         .expect(422);
       expect(response.body.message).toBe(message);
@@ -167,7 +167,7 @@ describe('Loans (e2e)', () => {
 
     it('returns 422 for a fund without versions', async () => {
       const { fund: empty } = await fixtures.fund();
-      const response = await as(Role.BackOffice, http().post('/loans'))
+      const response = await as(Role.BackOffice, http().post('/api/loans'))
         .send({ ...validBody(), fundId: empty.id })
         .expect(422);
       expect(response.body.message).toBe('Fund has no version');
@@ -177,17 +177,17 @@ describe('Loans (e2e)', () => {
   describe('GET /loans/:id', () => {
     it.each([Role.BackOffice, Role.FieldAgent])('returns the loan to %s', async (role) => {
       const created = await createLoan();
-      const response = await as(role, http().get(`/loans/${created.id}`)).expect(200);
+      const response = await as(role, http().get(`/api/loans/${created.id}`)).expect(200);
       expect(response.body).toEqual(created);
     });
 
     it('returns 404 for a missing loan and 400 for a non-UUID id', async () => {
-      await as(Role.BackOffice, http().get(`/loans/${MISSING_ID}`)).expect(404);
-      await as(Role.BackOffice, http().get('/loans/not-a-uuid')).expect(400);
+      await as(Role.BackOffice, http().get(`/api/loans/${MISSING_ID}`)).expect(404);
+      await as(Role.BackOffice, http().get('/api/loans/not-a-uuid')).expect(400);
     });
 
     it('requires authentication', async () => {
-      await http().get(`/loans/${MISSING_ID}`).expect(401);
+      await http().get(`/api/loans/${MISSING_ID}`).expect(401);
     });
   });
 
@@ -204,7 +204,7 @@ describe('Loans (e2e)', () => {
           installmentCount: 2,
         });
 
-        const response = await as(role, http().get(`/borrowers/${own.id}/loans`)).expect(200);
+        const response = await as(role, http().get(`/api/borrowers/${own.id}/loans`)).expect(200);
 
         expect(response.body).toEqual([
           {
@@ -230,12 +230,12 @@ describe('Loans (e2e)', () => {
     );
 
     it('returns 404 for a missing borrower and 400 for a non-UUID id', async () => {
-      await as(Role.BackOffice, http().get(`/borrowers/${MISSING_ID}/loans`)).expect(404);
-      await as(Role.BackOffice, http().get('/borrowers/not-a-uuid/loans')).expect(400);
+      await as(Role.BackOffice, http().get(`/api/borrowers/${MISSING_ID}/loans`)).expect(404);
+      await as(Role.BackOffice, http().get('/api/borrowers/not-a-uuid/loans')).expect(400);
     });
 
     it('requires authentication', async () => {
-      await http().get(`/borrowers/${borrower.id}/loans`).expect(401);
+      await http().get(`/api/borrowers/${borrower.id}/loans`).expect(401);
     });
   });
 
@@ -244,9 +244,11 @@ describe('Loans (e2e)', () => {
       const own = await fixtures.borrower('Joana');
       await createLoan(validBody(own.id));
 
-      const response = await as(Role.BackOffice, http().delete(`/borrowers/${own.id}`)).expect(409);
+      const response = await as(Role.BackOffice, http().delete(`/api/borrowers/${own.id}`)).expect(
+        409,
+      );
       expect(response.body.message).toBe('Borrower has loans');
-      await as(Role.BackOffice, http().get(`/borrowers/${own.id}`)).expect(200);
+      await as(Role.BackOffice, http().get(`/api/borrowers/${own.id}`)).expect(200);
     });
   });
 });

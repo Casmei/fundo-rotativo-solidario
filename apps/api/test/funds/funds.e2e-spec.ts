@@ -26,7 +26,7 @@ describe('GET /funds (e2e)', () => {
   });
 
   it('requires authentication', async () => {
-    await request(app.getHttpServer()).get('/funds').expect(401);
+    await request(app.getHttpServer()).get('/api/funds').expect(401);
   });
 
   it.each([Role.BackOffice, Role.FieldAgent])(
@@ -39,7 +39,7 @@ describe('GET /funds (e2e)', () => {
       const withoutVersion = await fixtures.fund();
 
       const response = await request(app.getHttpServer())
-        .get('/funds')
+        .get('/api/funds')
         .set('Authorization', `Bearer ${tokens[role]}`)
         .expect(200);
 
