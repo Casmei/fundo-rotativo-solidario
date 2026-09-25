@@ -10,7 +10,14 @@ import {
   DEV_FALLBACK_LUANA_PASSWORD,
   loadSeedEnv,
 } from './seed.env.js';
+import { upsertSeedFund } from './upsert-seed-fund.js';
 import { upsertSeedUser } from './upsert-seed-user.js';
+
+const FRSBJ_FUND = {
+  name: 'Fundo Rotativo Solidário do Baixo Jequitinhonha',
+  version: 1,
+  policy: { minInstallments: 1, maxInstallments: 10, maxGraceMonths: 6, contributionRateBps: 500 },
+};
 
 async function main() {
   const env = loadEnv();
@@ -43,6 +50,9 @@ async function main() {
     role: Role.FieldAgent,
   });
   console.log(`[seed] Luana (field_agent): ${luana}`);
+
+  const frsbj = await upsertSeedFund(db, FRSBJ_FUND);
+  console.log(`[seed] ${FRSBJ_FUND.name} v${FRSBJ_FUND.version}: ${frsbj}`);
 
   await queryClient.end();
 }
