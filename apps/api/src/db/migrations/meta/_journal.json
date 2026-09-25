@@ -15,6 +15,13 @@
       "when": 1790211683433,
       "tag": "0001_tense_ironclad",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790296872782,
+      "tag": "0002_lazy_the_renegades",
+      "breakpoints": true
     }
   ]
 }
