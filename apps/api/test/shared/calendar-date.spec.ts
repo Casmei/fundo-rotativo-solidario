@@ -71,4 +71,12 @@ describe('addMonthsClamped', () => {
   it.each([-1, 1.5, Number.NaN])('throws on months = %s', (months) => {
     expect(() => addMonthsClamped('2026-01-31', months)).toThrow(RangeError);
   });
+
+  it('throws when the resulting year exceeds 9999', () => {
+    expect(() => addMonthsClamped('9999-12-31', 1)).toThrow(RangeError);
+  });
+
+  it('does not throw when the resulting year is still 9999', () => {
+    expect(addMonthsClamped('9999-11-30', 1)).toBe('9999-12-30');
+  });
 });

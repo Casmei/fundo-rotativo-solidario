@@ -46,6 +46,8 @@ export class LoansService {
   ) {}
 
   async create(input: CreateLoanDto): Promise<LoanDetails> {
+    // Lookups run outside the transaction on purpose: fund versions are insert-only,
+    // and the borrower FK is re-checked by the insert below (mapped to 404 on failure).
     const borrower = await this.findBorrower(input.borrowerId);
     const { fund, currentVersion } = await this.fundsService.findWithCurrentVersion(input.fundId);
     if (!currentVersion) {

@@ -46,6 +46,9 @@ export function addMonthsClamped(date: string, months: number): string {
   }
   const monthIndex = parts.year * 12 + (parts.month - 1) + months;
   const year = Math.floor(monthIndex / 12);
+  if (year > 9999) {
+    throw new RangeError(`addMonthsClamped result year exceeds 9999: ${year}`);
+  }
   const month = (monthIndex % 12) + 1;
   return formatCalendarDate({ year, month, day: Math.min(parts.day, daysInMonth(year, month)) });
 }

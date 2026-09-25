@@ -126,6 +126,7 @@ describe('Loans (e2e)', () => {
       ['graceMonths negative', { graceMonths: -1 }],
       ['impossible disbursedAt', { disbursedAt: '2026-02-30' }],
       ['disbursedAt with time', { disbursedAt: '2026-01-31T03:00:00Z' }],
+      ['disbursedAt with an implausible year', { disbursedAt: '0226-03-10' }],
     ])('rejects %s with 400', async (_, overrides) => {
       await as(Role.BackOffice, http().post('/loans'))
         .send({ ...validBody(), ...overrides })

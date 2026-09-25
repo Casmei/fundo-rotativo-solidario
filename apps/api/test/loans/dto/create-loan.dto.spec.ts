@@ -1,6 +1,11 @@
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CreateLoanDto, MAX_PRINCIPAL_CENTS } from '../../../src/loans/dto/create-loan.dto.js';
+import {
+  CreateLoanDto,
+  MAX_DISBURSED_AT,
+  MAX_PRINCIPAL_CENTS,
+  MIN_DISBURSED_AT,
+} from '../../../src/loans/dto/create-loan.dto.js';
 
 const valid = {
   borrowerId: '5f0c2c1e-6c5b-4c1a-9a57-2f1d8a1b9c11',
@@ -31,6 +36,8 @@ describe('CreateLoanDto', () => {
       }),
     ).toEqual([]);
     expect(await errorProperties({ ...valid, principalCents: 1 })).toEqual([]);
+    expect(await errorProperties({ ...valid, disbursedAt: MIN_DISBURSED_AT })).toEqual([]);
+    expect(await errorProperties({ ...valid, disbursedAt: MAX_DISBURSED_AT })).toEqual([]);
   });
 
   it.each(Object.keys(valid))('rejects a missing %s', async (field) => {
@@ -58,6 +65,9 @@ describe('CreateLoanDto', () => {
     ['disbursedAt', '2026-01-31T00:00:00Z'],
     ['disbursedAt', 20260131],
     ['disbursedAt', ''],
+    ['disbursedAt', '1999-12-31'],
+    ['disbursedAt', '2100-01-01'],
+    ['disbursedAt', '0226-03-10'],
   ])('rejects %s = %j', async (field, value) => {
     expect(await errorProperties({ ...valid, [field]: value })).toEqual([field]);
   });
