@@ -1,4 +1,4 @@
-import { type INestApplication, ValidationPipe } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
@@ -8,6 +8,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types.js';
 import { AppModule } from '../../src/app.module.js';
 import { loadEnv } from '../../src/config/env.js';
+import { configureApp } from '../../src/configure-app.js';
 import * as schema from '../../src/db/schema.js';
 import { Role } from '../../src/shared/role.enum.js';
 
@@ -49,7 +50,7 @@ describe('AuthController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    configureApp(app);
     await app.init();
   });
 
@@ -59,7 +60,7 @@ describe('AuthController (e2e)', () => {
 
   it('returns an access token for valid credentials', async () => {
     const response = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ phone: TEST_USER.phone, password: TEST_USER.password })
       .expect(200);
 
@@ -68,21 +69,21 @@ describe('AuthController (e2e)', () => {
 
   it('rejects an incorrect password', () => {
     return request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ phone: TEST_USER.phone, password: 'wrong-password' })
       .expect(401);
   });
 
   it('rejects a phone number that does not exist', () => {
     return request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ phone: '5533900000000', password: 'whatever12' })
       .expect(401);
   });
 
   it('rejects a request missing the password field', () => {
     return request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/api/auth/login')
       .send({ phone: TEST_USER.phone })
       .expect(400);
   });
